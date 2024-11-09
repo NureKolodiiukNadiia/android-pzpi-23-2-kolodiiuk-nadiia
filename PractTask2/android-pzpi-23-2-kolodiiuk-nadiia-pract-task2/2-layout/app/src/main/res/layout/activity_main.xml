@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".MainActivity">
+    
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+    >
+        <Button
+                android:id="@+id/constraintLayout"
+                android:layout_width="700px"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="bottom"
+                android:onClick="onConstraintLayoutClick"
+                android:text="Constraint Layout" />
+
+        <Button
+                android:text="Frame Layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onFrameLayoutClick"
+                android:id="@+id/button2" />
+
+        <Button
+                android:text="Relative Layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onRelativeLayoutClick"
+                android:id="@+id/button3" />
+
+        <Button
+                android:id="@+id/gridLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:onClick="onGridLayoutClick"
+                android:text="Grid Layout" />
+
+        <Button
+                android:text="Layout for Calculator"
+                android:layout_margin="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onCalculatorLayoutClick"
+                android:id="@+id/button4" />
+
+    </LinearLayout>
+
+    <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="@integer/material_motion_duration_short_1"
+            app:srcCompat="@android:mipmap/sym_def_app_icon" />
+
+    <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="25dp"
+            android:textColor="@color/design_default_color_error"
+            android:padding="30dp"
+            android:text="Practical task 2. Part 2" />
+</LinearLayout>
