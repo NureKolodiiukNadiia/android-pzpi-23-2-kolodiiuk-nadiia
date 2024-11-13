@@ -1,0 +1,142 @@
+Харківський університет радіоелектроніки
+Факультет комп'ютерних наук
+Кафедра програмної інженерії
+
+
+
+
+ЗВІТ
+до лабораторного заняття №1 з дисципліни
+"Програмування під Android"
+на тему "Створення мінімального застосунку для Android" 
+
+
+
+Виконала ст. гр. ПЗПІ-23-2
+Колодіюк Надія Сергіївна
+
+
+Перевірив 
+ст. викладач кафедри ПІ
+Сокорчук Ігор Петрович
+
+
+
+
+
+
+Харків 2024
+
+МЕТА
+
+Навчитися створювати мінімальні застосунки для Android. Навчитися реалізовувати усі методи життєвого циклу Activity.
+
+ЗАВДАННЯ
+
+Встановити Android Studio та створити мінімальний застосунок для Android.
+Застосунок повинен містити одну активність (Activity). В активності потрібно реалізувати усі базові методи життєвого циклу активностей. При запуску застосунку у центрі екрану повинен з'являтися напис «Task 1». Для розмітки екрану активності потрібно використати лінійну розмітку (Linear Layout).
+
+ХІД РОБОТИ
+
+У MainActivity реалізовано усі методи життєвого циклу Activity:
+    • onCreate() — викликається при першому створенні активності. Використовується для завдань, таких як ініціалізація змінних, прив’язка даних та встановлення макета інтерфейсу користувача за допомогою setContentView(). Отримує savedInstanceState з попереднім станом активності, якщо такий існує. 
+    • onStart() — викликається, коли активність стає видимою для користувача. Тут готується інтерфейс користувача, але ще не можлива взаємодія з ним. 
+    • onResume() — викликається, коли активність переходить на передній план і готова до взаємодії з користувачем. Тут можна ініціалізувати ресурси, як-от камеру.
+    • onPause() — викликається, коли активність залишає передній план. Використовується для звільнення ресурсів, таких як сенсори, які не потрібні під час паузи.
+    • onStop() — викликається, коли активність стає невидимою для користувача. Використовується для звільнення непотрібних ресурсів та виконання тривалих операцій, як-от збереження даних.
+    • onDestroy() — викликається перед знищенням активності (через дію користувача або системну потребу, наприклад, зміну конфігурації). Використовується для остаточного очищення ресурсів.
+    • onRestart() — викликається, коли активність виходить зі стану Stopped і готується до повторного відображення користувачеві. Цей метод виконується перед onStart(), коли активність відновлюється після тимчасового припинення, і використовується для відновлення будь-яких ресурсів або налаштувань, необхідних для продовження роботи активності.
+Для збереження стану активності та його відновлення після знищення активності використовують наступні методи:
+    • onSaveInstanceState() — викликається, коли активність може бути тимчасово знищена, наприклад, через зміну конфігурації (переворот екрану) або вихід із програми. Використовується для збереження тимчасового стану активності у Bundle, щоб його можна було відновити пізніше. Наприклад, тут можна зберегти текстові дані чи змінні, які будуть відновлені після перезавантаження активності. Після завершення onSaveInstanceState() система також зберігає ієрархію представлень (View hierarchy) активності.
+    • onRestoreInstanceState() — викликається після onStart(), якщо існує збережений стан активності. Метод отримує savedInstanceState і використовується для відновлення даних, збережених в onSaveInstanceState(). Наприклад, можна відновити текст у TextView або інші елементи, які користувач бачив перед тим, як активність була тимчасово знищена.
+
+ВИСНОВКИ
+
+Посилання на репозиторій з програмним кодом створеного застосунку: https://github.com/NureKolodiiukNadiia/android-pzpi-23-2-kolodiiuk-nadiia/LabTask1/android-pzpi-23-2-kolodiiuk-nadiia-lab-task1. Посилання на відеозапис: https://youtu.be/kDy5os4zOKM. 
+
+
+ВИКОРИСТАНІ ДЖЕРЕЛА
+
+    1. Документація Android. URL: https://developer.android.com/guide/components/activities/activity-lifecycle. 
+    2. Лекційні матеріали. URL: https://dl.nure.ua/mod/page/view.php?id=583041. 
+    3. Відеозвіт. URL: https://youtu.be/kDy5os4zOKM. 
+
+ДОДАТОК А
+
+MainActivity.java
+
+  1 package nadiia.kolodiiuk.labtask1;
+  2 
+  3 import android.os.Bundle;
+  4 import android.util.Log;
+  5 
+  6 import androidx.appcompat.app.AppCompatActivity;
+  7 
+  8 public class MainActivity extends AppCompatActivity {
+  9 
+10     @Override
+11     protected void onCreate(Bundle savedInstanceState) {
+12 
+13         super.onCreate(savedInstanceState);
+14         setContentView(R.layout.activity_main);
+15         Log.d("Lab 1", "onCreate called");
+16     }
+17 
+18     @Override
+19     protected void onStart() {
+20 
+21         super.onStart();
+22         Log.d("Lab 1", "onStart called");
+23     }
+24 
+25     @Override
+26     protected void onResume() {
+27 
+28         super.onResume();
+29         Log.d("Lab 1", "onResume called");
+30     }
+31 
+32     @Override
+33     protected void onPause() {
+34 
+35         super.onPause();
+36         Log.d("Lab 1", "onPause called");
+37     }
+38 
+39     @Override
+40     protected void onStop() {
+41 
+42         super.onStop();
+43         Log.d("Lab 1", "onStop called");
+44     }
+45 
+46     @Override
+47     protected void onRestart() {
+48 
+49         super.onRestart();
+50         Log.d("Lab 1", "onRestart called");
+51     }
+52 
+53     @Override
+54     protected void onDestroy() {
+55 
+56         super.onDestroy();
+57         Log.d("Lab 1", "onDestroy called");
+58     }
+59 
+60     @Override
+61     protected void onSaveInstanceState(Bundle bundle) {
+62 
+63         super.onSaveInstanceState(bundle);
+64         Log.d("Lab 1", "onSaveInstanceState called");
+65     }
+66 
+67     @Override
+68     protected void onRestoreInstanceState(Bundle bundle) {
+69 
+70         super.onRestoreInstanceState(bundle);
+71         Log.d("Lab 1", "onRestoreInstanceState called");
+72 
+73     }
+74 }
+
