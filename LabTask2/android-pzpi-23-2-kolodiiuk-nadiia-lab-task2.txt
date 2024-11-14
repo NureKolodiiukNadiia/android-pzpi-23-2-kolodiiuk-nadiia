@@ -1,0 +1,169 @@
+Харківський університет радіоелектроніки
+Факультет комп'ютерних наук
+Кафедра програмної інженерії
+
+
+
+
+ЗВІТ
+до лабораторного заняття №2 з дисципліни
+"Програмування під Android"
+на тему "Створення застосунку, що дозволяє редагувати колір панелі" 
+
+
+
+
+Виконала ст. гр. ПЗПІ-23-2
+Колодіюк Надія Сергіївна
+
+
+Перевірив 
+ст. викладач кафедри ПІ
+Сокорчук Ігор Петрович
+
+
+
+
+
+Харків 2024
+МЕТА
+
+Навчитися розробляти застосунки, що коректно працюють при зміні орієнтації екрану.
+
+ЗАВДАННЯ
+
+Розробити редактор, у якому з допомогою трьох регуляторів SeekBar встановлюється колір панелі.
+Регулятори визначають RGB компоненти кольору панелі. Зовнішній вигляд екрану редактора повинен залежати від орієнтації пристроя. У портретній орієнтації пристроя, регулятори повинні знаходитися знизу від панелі, займати 1/3 висоти і розташовуватися на всю ширину екрану. У ланшафтній – праворуч від панелі і займати 1/3 ширини. Решту екрану повинна займати кольорова панель.
+
+ХІД РОБОТИ
+
+Оскільки користувацький інтерфейс застосунку повинен мати досить суттєві відмінності у різних орієнтаціях екрану, для відповідної активності створено дві розмітки. Код файлів розмітки у додатках А та Б. Для введення компонентів кольору панелі використаний вбудований елемент SeekBar, так як подібні компоненти інтерфейсу часто використовуються для вибору кольору і є зручними та інтуїтивно зрозумілими для користувача. Кольорова панель реалізована за допомогою View.
+Колір панелі визначається комбінацією введених користувачем значень для усіх компонент кольору. Для цього визначається обробник подій SeekBar, що реалізує інтерфейс SeekBar.OnSeekBarChangeListener. 
+
+1 SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
+2     @Override
+3     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+4 	updateColorPanel();
+5     }
+6 
+7     @Override
+8     public void onStartTrackingTouch(SeekBar seekBar) {}
+9 
+10     @Override
+11     public void onStopTrackingTouch(SeekBar seekBar) {}
+12 }
+
+Метод updateColorPanel розраховує цілочисельне подання кольору за трьома компонентами та змінює колір панелі.
+
+1 private void updateColorPanel() {
+2 	int color = Color.rgb(redSeekBar.getProgress(), greenSeekBar.getProgress(), blueSeekBar.getProgress());
+3 	colorPanel.setBackgroundColor(color);
+4 }
+
+ВИСНОВКИ
+
+Під час розробки застосунків для Android важливим є врахування того, що орієнтація екрана може змінюватися, тож користувацький інтерфейс має адаптуватися до таких змін. Одним із способів підтримки адаптивності є використання різних розміток для портретної та ландшафтної орієнтацій.
+Посилання на репозиторій з програмним кодом створеного застосунку: https://github.com/NureKolodiiukNadiia/android-pzpi-23-2-kolodiiuk-nadiia/LabTask2/android-pzpi-23-2-kolodiiuk-nadiia-lab-task2 .  Посилання на відеозапис: https://youtu.be/7c7HvHrQB90. 
+
+
+ВИКОРИСТАНІ ДЖЕРЕЛА
+    1. Android документація. URL: https://developer.android.com/reference/android/widget/SeekBar. 
+    2. Посилання на відеозвіт. URL: https://youtu.be/7c7HvHrQB90. 
+
+ДОДАТОК А
+
+Розмітка для ландшафтної орієнтації екрану
+
+  1 <?xml version="1.0" encoding="utf-8"?>
+  2 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  3         android:layout_width="match_parent"
+  4         android:layout_height="match_parent"
+  5         xmlns:tools="http://schemas.android.com/tools"
+  6         tools:context=".MainActivity"
+  7         android:orientation="horizontal">
+  8 
+  9     <View
+10             android:id="@+id/colorPanel"
+11             android:layout_width="0dp"
+12             android:layout_height="match_parent"
+13             android:layout_weight="2" />
+14 
+15     <LinearLayout
+16             android:layout_width="0dp"
+17             android:layout_height="match_parent"
+18             android:layout_weight="1"
+19             android:orientation="vertical"
+20             android:padding="16dp">
+21 
+22         <SeekBar
+23                 android:id="@+id/redSeekBar"
+24                 android:layout_width="match_parent"
+25                 android:layout_height="wrap_content"
+26                 android:layout_marginVertical="8dp"
+27                 android:max="255" />
+28 
+29         <SeekBar
+30                 android:id="@+id/greenSeekBar"
+31                 android:layout_width="match_parent"
+32                 android:layout_height="wrap_content"
+33                 android:layout_marginVertical="8dp"
+34                 android:max="255" />
+35 
+36         <SeekBar
+37                 android:id="@+id/blueSeekBar"
+38                 android:layout_width="match_parent"
+39                 android:layout_height="wrap_content"
+40                 android:layout_marginVertical="8dp"
+41                 android:max="255" />
+42 
+43     </LinearLayout>
+44 </LinearLayout>
+
+ДОДАТОК Б
+
+Розмітка для портретної орієнтації екрану
+
+  1 <?xml version="1.0" encoding="utf-8"?>
+  2 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  3         android:layout_width="match_parent"
+  4         android:layout_height="match_parent"
+  5         xmlns:tools="http://schemas.android.com/tools"
+  6         tools:context=".MainActivity"
+  7         android:orientation="vertical">
+  8 
+  9     <View
+10             android:id="@+id/colorPanel"
+11             android:layout_width="match_parent"
+12             android:layout_height="0dp"
+13             android:layout_weight="2" />
+14 
+15     <LinearLayout
+16             android:layout_width="match_parent"
+17             android:layout_height="0dp"
+18             android:layout_weight="1"
+19             android:orientation="vertical"
+20             android:padding="16dp">
+21 
+22         <SeekBar
+23                 android:id="@+id/redSeekBar"
+24                 android:layout_width="match_parent"
+25                 android:layout_height="wrap_content"
+26                 android:layout_marginVertical="8dp"
+27                 android:max="255" />
+28 
+29         <SeekBar
+30                 android:id="@+id/greenSeekBar"
+31                 android:layout_width="match_parent"
+32                 android:layout_height="wrap_content"
+33                 android:layout_marginVertical="8dp"
+34                 android:max="255" />
+35 
+36         <SeekBar
+37                 android:id="@+id/blueSeekBar"
+38                 android:layout_width="match_parent"
+39                 android:layout_height="wrap_content"
+40                 android:layout_marginVertical="8dp"
+41                 android:max="255" />
+42 
+43     </LinearLayout>
+44 </LinearLayout>
