@@ -61,7 +61,7 @@
 ВИСНОВКИ
 
 Для постійного збереження інформації користувача та даних, необхідних для функціонування застосунку існує декілька підходів у застосунках для Android. Для збереження налаштувань можна використовувати SharedPreferences, для збереження більшого об’єму даних використовується база даних SQLite, також є можливість писати у файл.
-Посилання на репозиторій з програмним кодом створеного застосунку: https://github.com/NureKolodiiukNadiia/android-pzpi-23-2-kolodiiuk-nadiia/LabTask1/android-pzpi-23-2-kolodiiuk-nadiia-pract-task1. Посилання на відеозапис: https://youtu.be/nX1KGg5nC0w .
+Посилання на репозиторій з програмним кодом створеного застосунку: https://github.com/NureKolodiiukNadiia/android-pzpi-23-2-kolodiiuk-nadiia/PractTask4/android-pzpi-23-2-kolodiiuk-nadiia-pract-task4. Посилання на відеозапис: https://youtu.be/nX1KGg5nC0w .
 
 ВИКОРИСТАНІ ДЖЕРЕЛА
 
