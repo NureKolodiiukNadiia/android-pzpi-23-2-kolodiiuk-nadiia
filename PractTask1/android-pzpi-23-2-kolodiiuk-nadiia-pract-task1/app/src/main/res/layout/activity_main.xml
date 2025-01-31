@@ -19,4 +19,4 @@
             android:layout_height="wrap_content"
             android:text="Натисніть мене"
             android:layout_gravity="center" />
-</LinearLayout> 
+</LinearLayout>

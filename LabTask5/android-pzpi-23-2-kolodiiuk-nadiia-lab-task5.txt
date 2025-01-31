@@ -1,0 +1,599 @@
+﻿Харківський університет радіоелектроніки
+Факультет комп'ютерних наук
+Кафедра програмної інженерії
+
+
+
+ЗВІТ
+до лабораторного заняття №5 з дисципліни
+"Програмування під Android"
+на тему "Розширення функціоналу застосунку для ведення нотаток" 
+
+
+
+Виконала ст. гр. ПЗПІ-23-2
+Колодіюк Надія Сергіївна
+
+
+Перевірив 
+ст. викладач кафедри ПІ
+Сокорчук Ігор Петрович
+
+
+
+
+
+
+
+Харків 2024
+
+МЕТА
+
+Навчитися створювати застосунки, що підтримують збереження даних користувача у базі даних. Навчитися працювати з фрагментами. Навчитися зберігати налаштування користувача.
+
+ЗАВДАННЯ
+
+1. Доповнити завдання №4 наступними функціями:
+- реалізувати різне відображення для портретної та ландшафтної орієнтації екрану за допомогою тих самих фрагментів;
+- створити дві редаговані теми (тло, гарнітура шрифту, колір тексту тощо) і застосовувати їх в залежності від налаштувань програми.
+- додати можливість задавати в налаштуваннях програми розмір шрифту.
+2. Переробити завдання №4 так, щоб дані нотаток зберігалися у базі даних SQLite.
+
+ХІД РОБОТИ
+
+	Для реалізації різного відображення в портретній та ландшафтній орієнтації було створено окремі макети для кожної орієнтації. Використовуючи ті самі фрагменти, система автоматично підхоплює відповідний файл розмітки залежно від орієнтації екрану. Це дозволяє зберегти спільну логіку у фрагментах, але змінювати їх відображення. Приклад коду у додатку А.
+	Було створено дві теми: світлу та темну. Кожна з тем має свої кольори фону, тексту та стилі елементів. Також додано змінну колірну схему (blue/brown) для обраної теми. У налаштуваннях програми реалізовано вибір розміру шрифту (маленький, середній, великий). Під час ініціалізації теми до базової теми динамічно застосовується стиль з відповідним розміром тексту. Код у додатку Б. Залежно від налаштувань у SharedPreferences, додаток ініціалізує відповідну тему під час запуску. Код у додатку В.  
+	Для зберігання даних нотаток було використано базу даних SQLite. Створено клас DBHelper для роботи з базою даних, який містить методи для вставки, оновлення, видалення та отримання нотаток. Клас NoteRepository перероблено таким чином, що він використовує DBHelper для зберігання даних. Код у додатку Г.
+
+ВИСНОВКИ
+
+Посилання на репозиторій з програмним кодом створеного застосунку: https://github.com/NureKolodiiukNadiia/android-pzpi-23-2-kolodiiuk-nadiia/LabTask5/android-pzpi-23-2-kolodiiuk-nadiia-lab-task5. Посилання на відеозапис: https://youtu.be/rW2g0MBcNWo .
+
+
+ВИКОРИСТАНІ ДЖЕРЕЛА
+    1. Відеозвіт, URL: https://youtu.be/rW2g0MBcNWo .
+    2. Styles and themes  |  Views  |  Android Developers. Android Developers. URL: https://developer.android.com/develop/ui/views/theming/themes .
+    3. Save data using SQLite  |  Android Developers. Android Developers. URL: https://developer.android.com/training/data-storage/sqlite#java .
+ДОДАТОК А
+
+Портретна та ландшафтна розмітки для NoteEditingFragment
+
+  1 <?xml version="1.0" encoding="utf-8"?>
+  2 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  3     xmlns:tools="http://schemas.android.com/tools"
+  4     xmlns:app="http://schemas.android.com/apk/res-auto"
+  5     android:layout_width="match_parent"
+  6     android:layout_height="match_parent"
+  7     tools:context=".NoteEditingFragment">
+  8 
+  9     <EditText
+ 10         android:id="@+id/editTextName"
+ 11         android:layout_width="0dp"
+ 12         android:layout_height="wrap_content"
+ 13         android:hint="@string/note_name"
+ 14         android:inputType="text"
+ 15         app:layout_constraintTop_toTopOf="parent"
+ 16         app:layout_constraintStart_toStartOf="parent"
+ 17         app:layout_constraintEnd_toEndOf="parent"
+ 18         android:layout_margin="16dp" />
+ 19 
+ 20     <EditText
+ 21         android:id="@+id/editTextDescription"
+ 22         android:layout_width="0dp"
+ 23         android:layout_height="wrap_content"
+ 24         android:hint="@string/note_description"
+ 25         android:inputType="textMultiLine"
+ 26         app:layout_constraintTop_toBottomOf="@id/editTextName"
+ 27         app:layout_constraintStart_toStartOf="parent"
+ 28         app:layout_constraintEnd_toEndOf="parent"
+ 29         android:layout_margin="16dp" />
+ 30 
+ 31     <Spinner
+ 32         android:id="@+id/spinnerPriority"
+ 33         android:layout_width="0dp"
+ 34         android:layout_height="wrap_content"
+ 35         android:entries="@array/priority_array"
+ 36         app:layout_constraintTop_toBottomOf="@id/editTextDescription"
+ 37         app:layout_constraintStart_toStartOf="parent"
+ 38         app:layout_constraintEnd_toEndOf="parent"
+ 39         android:layout_margin="16dp" />
+ 40 
+ 41     <Button
+ 42             android:id="@+id/selectDateButton"
+ 43             android:layout_width="0dp"
+ 44             android:layout_height="wrap_content"
+ 45             android:text="@string/select_date"
+ 46             android:layout_margin="16dp"
+ 47             app:layout_constraintStart_toStartOf="parent"
+ 48             android:layout_marginStart="28dp"
+ 49             android:layout_marginTop="114dp"
+ 50             app:layout_constraintTop_toBottomOf="@+id/spinnerPriority"
+ 51             app:layout_constraintEnd_toStartOf="@+id/buttonSave"
+ 52             android:layout_marginEnd="28dp"
+ 53             android:layout_marginBottom="176dp"
+ 54             app:layout_constraintBottom_toTopOf="@+id/noteImageView" />
+ 55 
+ 56     <Button
+ 57             android:id="@+id/selectTimeButton"
+ 58             android:layout_width="wrap_content"
+ 59             android:layout_height="wrap_content"
+ 60             android:text="@string/select_time"
+ 61             android:layout_margin="16dp"
+ 62             android:layout_marginBottom="99dp"
+ 63             app:layout_constraintBottom_toTopOf="@+id/selectImageButton"
+ 64             android:layout_marginStart="32dp"
+ 65             app:layout_constraintStart_toEndOf="@+id/noteImageView"
+ 66             android:layout_marginTop="197dp"
+ 67             app:layout_constraintTop_toBottomOf="@+id/spinnerPriority"
+ 68             android:layout_marginEnd="42dp"
+ 69             app:layout_constraintEnd_toEndOf="parent" />
+ 70 
+ 71     <TextView
+ 72         android:id="@+id/selectedDateTime"
+ 73         android:layout_width="wrap_content"
+ 74         android:layout_height="wrap_content"
+ 75         android:textSize="16sp"
+ 76         app:layout_constraintTop_toBottomOf="@id/selectDateButton"
+ 77         app:layout_constraintStart_toStartOf="parent"
+ 78         android:layout_margin="16dp" />
+ 79 
+ 80     <ImageView
+ 81             android:id="@+id/noteImageView"
+ 82             android:layout_width="227dp"
+ 83             android:layout_height="153dp"
+ 84             android:scaleType="centerCrop"
+ 85             android:layout_margin="16dp"
+ 86             app:layout_constraintStart_toStartOf="parent"
+ 87             android:layout_marginStart="4dp"
+ 88             android:layout_marginTop="80dp"
+ 89             app:layout_constraintTop_toBottomOf="@+id/buttonSave"
+ 90             app:layout_constraintEnd_toStartOf="@+id/selectImageButton"
+ 91             android:layout_marginEnd="20dp"
+ 92             app:layout_constraintBottom_toBottomOf="parent"
+ 93             android:layout_marginBottom="336dp" />
+ 94 
+ 95     <Button
+ 96             android:id="@+id/selectImageButton"
+ 97             android:layout_width="wrap_content"
+ 98             android:layout_height="wrap_content"
+ 99             android:text="@string/select_image"
+100             android:layout_margin="16dp"
+101             android:layout_marginTop="191dp"
+102             app:layout_constraintTop_toBottomOf="@+id/spinnerPriority"
+103             app:layout_constraintBottom_toBottomOf="parent"
+104             android:layout_marginBottom="505dp"
+105             android:layout_marginStart="18dp"
+106             app:layout_constraintStart_toEndOf="@+id/noteImageView"
+107             android:layout_marginEnd="32dp"
+108             app:layout_constraintEnd_toEndOf="parent" />
+109 
+110     <Button
+111             android:id="@+id/buttonSave"
+112             android:layout_width="wrap_content"
+113             android:layout_height="wrap_content"
+114             android:text="@string/save"
+115             app:layout_constraintTop_toBottomOf="@id/spinnerPriority"
+116             app:layout_constraintStart_toStartOf="parent"
+117             app:layout_constraintEnd_toEndOf="parent"
+118             android:layout_margin="16dp"
+119             android:layout_marginTop="20dp"
+120             app:layout_constraintHorizontal_bias="0.479" />
+121 
+122 </androidx.constraintlayout.widget.ConstraintLayout>
+123 
+124 <?xml version="1.0" encoding="utf-8"?>
+125 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+126         xmlns:tools="http://schemas.android.com/tools"
+127         xmlns:app="http://schemas.android.com/apk/res-auto"
+128         android:layout_width="match_parent"
+129         android:layout_height="match_parent"
+130         tools:context=".NoteEditingFragment">
+131 
+132     <EditText
+133             android:id="@+id/editTextName"
+134             android:layout_width="0dp"
+135             android:layout_height="wrap_content"
+136             android:hint="@string/note_name"
+137             android:inputType="text"
+138             app:layout_constraintTop_toTopOf="parent"
+139             app:layout_constraintStart_toStartOf="parent"
+140             app:layout_constraintEnd_toEndOf="parent"
+141             android:layout_margin="16dp" />
+142 
+143     <EditText
+144             android:id="@+id/editTextDescription"
+145             android:layout_width="0dp"
+146             android:layout_height="wrap_content"
+147             android:hint="@string/note_description"
+148             android:inputType="textMultiLine"
+149             app:layout_constraintTop_toBottomOf="@id/editTextName"
+150             app:layout_constraintStart_toStartOf="parent"
+151             app:layout_constraintEnd_toEndOf="parent"
+152             android:layout_margin="16dp" />
+153 
+154     <Spinner
+155             android:id="@+id/spinnerPriority"
+156             android:layout_width="0dp"
+157             android:layout_height="wrap_content"
+158             android:entries="@array/priority_array"
+159             app:layout_constraintTop_toBottomOf="@id/editTextDescription"
+160             app:layout_constraintStart_toStartOf="parent"
+161             app:layout_constraintEnd_toEndOf="parent"
+162             android:layout_margin="16dp" />
+163 
+164     <Button
+165             android:id="@+id/selectDateButton"
+166             android:layout_width="0dp"
+167             android:layout_height="wrap_content"
+168             android:text="@string/select_date"
+169             android:layout_margin="16dp"
+170             app:layout_constraintTop_toBottomOf="@id/spinnerPriority"
+171             app:layout_constraintStart_toStartOf="parent"
+172             app:layout_constraintEnd_toStartOf="@id/selectTimeButton"
+173             android:layout_marginTop="16dp" />
+174 
+175     <Button
+176             android:id="@+id/selectTimeButton"
+177             android:layout_width="0dp"
+178             android:layout_height="wrap_content"
+179             android:text="@string/select_time"
+180             android:layout_margin="16dp"
+181             app:layout_constraintTop_toBottomOf="@id/spinnerPriority"
+182             app:layout_constraintStart_toEndOf="@id/selectDateButton"
+183             app:layout_constraintEnd_toEndOf="parent"
+184             android:layout_marginTop="16dp" />
+185 
+186     <TextView
+187             android:id="@+id/selectedDateTime"
+188             android:layout_width="wrap_content"
+189             android:layout_height="wrap_content"
+190             android:textSize="16sp"
+191             app:layout_constraintTop_toBottomOf="@id/selectDateButton"
+192             app:layout_constraintStart_toStartOf="parent"
+193             android:layout_margin="16dp" />
+194 
+195     <ImageView
+196             android:id="@+id/noteImageView"
+197             android:layout_width="0dp"
+198             android:layout_height="0dp"
+199             android:scaleType="centerCrop"
+200             android:layout_margin="16dp"
+201             app:layout_constraintTop_toBottomOf="@id/selectedDateTime"
+202             app:layout_constraintStart_toStartOf="parent"
+203             app:layout_constraintEnd_toStartOf="@id/selectImageButton"
+204             app:layout_constraintBottom_toBottomOf="parent"
+205             android:layout_marginBottom="16dp" />
+206 
+207     <Button
+208             android:id="@+id/selectImageButton"
+209             android:layout_width="wrap_content"
+210             android:layout_height="wrap_content"
+211             android:text="@string/select_image"
+212             android:layout_margin="16dp"
+213             app:layout_constraintTop_toBottomOf="@id/selectedDateTime"
+214             app:layout_constraintStart_toEndOf="@id/noteImageView"
+215             app:layout_constraintEnd_toEndOf="parent"
+216             app:layout_constraintBottom_toBottomOf="parent"
+217             android:layout_marginBottom="16dp" />
+218 
+219     <Button
+220             android:id="@+id/buttonSave"
+221             android:layout_width="wrap_content"
+222             android:layout_height="wrap_content"
+223             android:text="@string/save"
+224             app:layout_constraintTop_toBottomOf="@id/spinnerPriority"
+225             app:layout_constraintStart_toStartOf="parent"
+226             app:layout_constraintEnd_toEndOf="parent"
+227             android:layout_margin="16dp"
+228             android:layout_marginTop="16dp" />
+229 
+230 </androidx.constraintlayout.widget.ConstraintLayout>
+ДОДАТОК Б
+
+Зміна теми та розміру шрифту в SettingsFragment
+
+  1     private void setupThemeAndFontSizeOptions(View view) {
+  2         Spinner spinnerTheme = view.findViewById(R.id.spinnerTheme);
+  3         Spinner spinnerColorScheme = view.findViewById(R.id.spinnerColorScheme);
+  4         Spinner spinnerFontSize = view.findViewById(R.id.spinnerFontSize);
+  5 
+  6         String currentTheme = sharedPreferences.getString(KEY_THEME, "light");
+  7         String currentColorScheme = sharedPreferences.getString(KEY_COLOR_SCHEME, "blue");
+  8         String currentFontSize = sharedPreferences.getString(KEY_FONT_SIZE, "medium");
+  9 
+ 10         spinnerTheme.setSelection(currentTheme.equals("dark") ? 1 : 0);
+ 11         spinnerTheme.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+ 12             @Override
+ 13             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+ 14                 String newTheme = position == 1 ? "dark" : "light";
+ 15                 if (!newTheme.equals(currentTheme)) {
+ 16                     sharedPreferences.edit().putString(KEY_THEME, newTheme).apply();
+ 17                     requireActivity().recreate();
+ 18                 }
+ 19             }
+ 20 
+ 21             @Override
+ 22             public void onNothingSelected(AdapterView<?> parent) {}
+ 23         });
+ 24 
+ 25         spinnerColorScheme.setSelection(currentColorScheme.equals("brown") ? 1 : 0);
+ 26         spinnerColorScheme.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+ 27             @Override
+ 28             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+ 29                 String newColorScheme = position == 1 ? "brown" : "blue";
+ 30                 if (!newColorScheme.equals(currentColorScheme)) {
+ 31                     sharedPreferences.edit().putString(KEY_COLOR_SCHEME, newColorScheme).apply();
+ 32                     requireActivity().recreate();
+ 33                 }
+ 34             }
+ 35 
+ 36             @Override
+ 37             public void onNothingSelected(AdapterView<?> parent) {}
+ 38         });
+ 39 
+ 56     private String getFontSizeValue(int position) {
+ 57         switch (position) {
+ 58             case 0: return "small";
+ 59             case 2: return "large";
+ 60             default: return "medium";
+ 61         }
+ 62     }
+ 63 
+ 64     private int getFontSizePosition(String fontSize) {
+ 65         switch (fontSize) {
+ 66             case "small": return 0;
+ 67             case "large": return 2;
+ 68             default: return 1;
+ 69         }
+ 70     }
+ 40         spinnerFontSize.setSelection(getFontSizePosition(currentFontSize));
+ 41         spinnerFontSize.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+ 42             @Override
+ 43             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+ 44                 String newSize = getFontSizeValue(position);
+ 45                 if (!newSize.equals(currentFontSize)) {
+ 46                     sharedPreferences.edit().putString(KEY_FONT_SIZE, newSize).apply();
+ 47                     requireActivity().recreate();
+ 48                 }
+ 49             }
+ 51             @Override
+ 52             public void onNothingSelected(AdapterView<?> parent) {}
+ 53         });
+ 54     }
+ 55 
+ 56     private String getFontSizeValue(int position) {
+ 57         switch (position) {
+ 58             case 0: return "small";
+ 59             case 2: return "large";
+ 60             default: return "medium";
+ 61         }
+ 62     }
+ 63 
+ 64     private int getFontSizePosition(String fontSize) {
+ 65         switch (fontSize) {
+ 66             case "small": return 0;
+ 67             case "large": return 2;
+ 68             default: return 1;
+ 69         }
+ 70     }
+ДОДАТОК В
+
+Ініціалізація теми та розміру шрифту при запуску застосунку у MainActivity
+
+  1     private void applyTheme() {
+  2         SharedPreferences prefs = getSharedPreferences("app_settings", MODE_PRIVATE);
+  3         String theme = prefs.getString("theme", "light");
+  4         String colorScheme = prefs.getString("color_scheme", "blue");
+  5         String fontSize = prefs.getString("font_size", "medium");
+  6 
+  7         int baseThemeResId;
+  8         if ("dark".equals(theme)) {
+  9             baseThemeResId = "brown".equals(colorScheme) 
+ 10                 ? R.style.DarkBrownTheme 
+ 11                 : R.style.DarkBlueTheme;
+ 12         } else {
+ 13             baseThemeResId = "brown".equals(colorScheme) 
+ 14                 ? R.style.LightBrownTheme 
+ 15                 : R.style.LightBlueTheme;
+ 16         }
+ 17 
+ 18         setTheme(baseThemeResId);
+ 19 
+ 20         int fontSizeStyleResId;
+ 21         switch (fontSize) {
+ 22             case "small":
+ 23                 fontSizeStyleResId = R.style.SmallTextSize;
+ 24                 break;
+ 25             case "large":
+ 26                 fontSizeStyleResId = R.style.LargeTextSize;
+ 27                 break;
+ 28             default:
+ 29                 fontSizeStyleResId = R.style.MediumTextSize;
+ 30                 break;
+ 31         }
+ 32         getTheme().applyStyle(fontSizeStyleResId, true);
+ 33     }
+ 34    
+ДОДАТОК Г
+
+DBHelper та NoteRepository
+
+  1 public class DBHelper extends SQLiteOpenHelper {
+  2 
+  3     private static final String DATABASE_NAME = "notes.db";
+  4     private static final int DATABASE_VERSION = 1;
+  5 
+  6     public DBHelper(@Nullable Context context) {
+  7         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+  8     }
+  9 
+ 10     @SuppressLint("SQLiteString")
+ 11     @Override
+ 12     public void onCreate(SQLiteDatabase db) {
+ 13         db.execSQL("CREATE TABLE notes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, description TEXT," +
+ 14                 " priority INTEGER, date TEXT, time TEXT, created_at TEXT, image BLOB)");
+ 15     }
+ 16 
+ 17     @Override
+ 18     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+ 19         db.execSQL("DROP TABLE IF EXISTS notes");
+ 20         onCreate(db);
+ 21     }
+ 22 
+ 23     public long insertNote(String name, String description, int priority, String date, String time, String createdAt, byte[] image) {
+ 24         SQLiteDatabase db = getWritableDatabase();
+ 25         ContentValues contentValues = new ContentValues();
+ 26         contentValues.put("name", name);
+ 27         contentValues.put("description", description);
+ 28         contentValues.put("priority", priority);
+ 29         contentValues.put("date", date);
+ 30         contentValues.put("time", time);
+ 31         contentValues.put("created_at", createdAt);
+ 32         contentValues.put("image", image);
+ 33         return db.insert("notes", null, contentValues);
+ 34     }
+ 35 
+ 36     public void updateNote(int id, String name, String description, int priority, String date, String time, String createdAt, byte[] image) {
+ 37         SQLiteDatabase db = getWritableDatabase();
+ 38         ContentValues contentValues = new ContentValues();
+ 39         contentValues.put("name", name);
+ 40         contentValues.put("description", description);
+ 41         contentValues.put("priority", priority);
+ 42         contentValues.put("date", date);
+ 43         contentValues.put("time", time);
+ 44         contentValues.put("created_at", createdAt);
+ 45         contentValues.put("image", image);
+ 46         db.update("notes", contentValues, "id = ?", new String[]{String.valueOf(id)});
+ 47     }
+ 48 
+ 49     public void deleteNote(int id) {
+ 50         SQLiteDatabase db = getWritableDatabase();
+ 51         db.delete("notes", "id = ?", new String[]{String.valueOf(id)});
+ 52     }
+ 53 
+ 54     public Cursor getAllNotes() {
+ 55         SQLiteDatabase db = getReadableDatabase();
+ 56         return db.query("notes", null, null, null, null, null, null);
+ 57     }
+ 58 
+ 59     public Cursor filterNotesByPriority(int priority) {
+ 60         SQLiteDatabase db = getReadableDatabase();
+ 61         return db.query("notes", null, "priority = ?", new String[]{String.valueOf(priority)}, null, null, null);
+ 62     }
+ 63 
+ 64     public Cursor filterNotesByText(String query) {
+ 65         SQLiteDatabase db = getReadableDatabase();
+ 66         String selection = "name LIKE ? OR description LIKE ?";
+ 67         String[] selectionArgs = new String[]{"%" + query + "%", "%" + query + "%"};
+ 68         return db.query("notes", null, selection, selectionArgs, null, null, null);
+ 69     }
+ 70 }
+ 71 
+ 72 public class NoteRepository implements Serializable {
+ 73     private final DBHelper dbHelper;
+ 74     private NoteDataListener noteDataListener;
+ 75 
+ 76     public NoteRepository(Context context) {
+ 77         this.dbHelper = new DBHelper(context);
+ 78     }
+ 79 
+ 80     public void setNoteDataListener(NoteDataListener noteDataListener) {
+ 81         this.noteDataListener = noteDataListener;
+ 82     }
+ 83 
+ 84     public List<Note> getFilteredNotes() {
+ 85         List<Note> notes = new ArrayList<>();
+ 86         Cursor cursor = dbHelper.getAllNotes();
+ 87         if (cursor.moveToFirst()) {
+ 88             do {
+ 89                 notes.add(cursorToNote(cursor));
+ 90             } while (cursor.moveToNext());
+ 91         }
+ 92         cursor.close();
+ 93         return notes;
+ 94     }
+ 95 
+ 96     public Note createNote(String name, String description, Priority priority, String time, String date, byte[] image, String createdAt) {
+ 97         long id = dbHelper.insertNote(name, description, priority.ordinal(), date, time, createdAt, image);
+ 98         Note note = new Note(name, description, priority, time, date, image, createdAt);
+ 99         note.setId((int) id);
+100         notifyDataChanged();
+101         return note;
+102     }
+103 
+104     public Note updateNote(Note updatedNote) {
+105         dbHelper.updateNote(updatedNote.getId(), updatedNote.getName(), updatedNote.getDescription(), updatedNote.getPriority().ordinal(), updatedNote.getDate(), updatedNote.getTime(), updatedNote.getCreatedAt(), updatedNote.getImage());
+106         notifyDataChanged();
+107         return updatedNote;
+108     }
+109 
+110     public void deleteNote(int id) {
+111         dbHelper.deleteNote(id);
+112         notifyDataChanged();
+113     }
+114 
+115     public void filterNotesByPriority(Priority priority) {
+116         List<Note> notes = new ArrayList<>();
+117         Cursor cursor;
+118         
+119         if (priority == null) {
+120             cursor = dbHelper.getAllNotes();
+121         } else {
+122             cursor = dbHelper.filterNotesByPriority(priority.ordinal());
+123         }
+124         
+125         if (cursor.moveToFirst()) {
+126             do {
+127                 notes.add(cursorToNote(cursor));
+128             } while (cursor.moveToNext());
+129         }
+130         cursor.close();
+131         
+132         if (noteDataListener != null) {
+133             noteDataListener.onDataChanged(notes);
+134         }
+135     }
+136 
+137     public void filterNotesByText(String query) {
+138         List<Note> notes = new ArrayList<>();
+139         Cursor cursor;
+140         
+141         if (query == null || query.isEmpty()) {
+142             cursor = dbHelper.getAllNotes();
+143         } else {
+144             cursor = dbHelper.filterNotesByText(query);
+145         }
+146         
+147         if (cursor.moveToFirst()) {
+148             do {
+149                 notes.add(cursorToNote(cursor));
+150             } while (cursor.moveToNext());
+151         }
+152         cursor.close();
+153         
+154         if (noteDataListener != null) {
+155             noteDataListener.onDataChanged(notes);
+156         }
+157     }
+158 
+159     private Note cursorToNote(Cursor cursor) {
+160         int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+161         String name = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+162         String description = cursor.getString(cursor.getColumnIndexOrThrow("description"));
+163         int priority = cursor.getInt(cursor.getColumnIndexOrThrow("priority"));
+164         String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+165         String time = cursor.getString(cursor.getColumnIndexOrThrow("time"));
+166         String createdAt = cursor.getString(cursor.getColumnIndexOrThrow("created_at"));
+167         byte[] image = cursor.getBlob(cursor.getColumnIndexOrThrow("image"));
+168         Note note = new Note(name, description, Priority.values()[priority], time, date, image, createdAt);
+169         note.setId(id);
+170         return note;
+171     }
+172 
+173     private void notifyDataChanged() {
+174         if (noteDataListener != null) {
+175             noteDataListener.onDataChanged(getFilteredNotes());
+176         }
+177     }
+178 }
+179 

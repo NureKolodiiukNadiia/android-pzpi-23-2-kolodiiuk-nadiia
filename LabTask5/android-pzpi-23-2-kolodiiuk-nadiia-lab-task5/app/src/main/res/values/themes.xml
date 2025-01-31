@@ -1,0 +1,42 @@
+<resources>
+    <!-- Base Themes -->
+    <style name="LightBlueTheme" parent="Theme.Material3.Light">
+        <item name="colorPrimary">@color/blue_primary</item>
+        <item name="colorPrimaryDark">@color/blue_primary_dark</item>
+        <item name="colorAccent">@color/blue_accent</item>
+        <item name="android:windowBackground">@color/lightBackground</item>
+        <!-- Other attributes -->
+    </style>
+
+    <style name="LightBrownTheme" parent="Theme.Material3.Light">
+        <item name="colorPrimary">@color/brown_primary</item>
+        <item name="colorPrimaryDark">@color/brown_primary_dark</item>
+        <item name="colorAccent">@color/brown_accent</item>
+        <item name="android:windowBackground">@color/lightBackground</item>
+    </style>
+
+    <style name="DarkBlueTheme" parent="Theme.Material3.Dark">
+        <item name="colorPrimary">@color/dark_blue_primary</item>
+        <item name="colorPrimaryDark">@color/dark_blue_primary_dark</item>
+        <item name="colorAccent">@color/dark_blue_accent</item>
+        <item name="android:windowBackground">@color/darkBackground</item>
+    </style>
+
+    <style name="DarkBrownTheme" parent="Theme.Material3.Dark">
+        <item name="colorPrimary">@color/dark_brown_primary</item>
+        <item name="colorPrimaryDark">@color/dark_brown_primary_dark</item>
+        <item name="colorAccent">@color/dark_brown_accent</item>
+        <item name="android:windowBackground">@color/darkBackground</item>
+    </style>
+
+    <!-- Font Size Styles -->
+    <style name="SmallTextSize">
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="MediumTextSize">
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="LargeTextSize">
+        <item name="android:textSize">18sp</item>
+    </style>
+</resources>

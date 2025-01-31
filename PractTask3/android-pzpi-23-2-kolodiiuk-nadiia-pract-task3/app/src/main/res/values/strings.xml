@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">PractTask3</string>
+    <string name="handler_executed_after_delay">Handler відпрацював після затримки</string>
+    <string name="message_received">"Повідомлення отримано "</string>
+    <string name="updated_from_background_thread">Оновлено з фонового потоку</string>
+    <string name="cancel">Відмінити</string>
+    <string name="ok">ОК</string>
+    <string name="clear_text">Очистити текст</string>
+    <string name="do_you_want_to_clear_the_text">Очистити текст?</string>
+    <string name="item">"Елемент "</string>
+    <string name="text">Текст</string>
+    <string name="customdialogbutton">Показати діалог CustomDialogButton</string>
+    <string name="datepicker">Показати діалог DatePicker</string>
+    <string name="dialog">Показати діалог Dialog</string>
+    <string name="handler">Handler</string>
+    <string name="recyclerview">RecyclerView</string>
+    <string name="select_theme">Обрати тему</string>
+    <string name="theme_1">Тема 1</string>
+    <string name="theme_2">Тема 2</string>
+    <string name="theme_3">Тема 3</string>
+    <string name="theme_4">Тема 4</string>
+</resources>

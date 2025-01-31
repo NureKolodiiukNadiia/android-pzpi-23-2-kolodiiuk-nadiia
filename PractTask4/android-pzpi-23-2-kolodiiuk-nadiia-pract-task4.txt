@@ -1,0 +1,213 @@
+﻿Харківський університет радіоелектроніки
+Факультет комп'ютерних наук
+Кафедра програмної інженерії
+
+
+
+
+ЗВІТ
+до практичного заняття №4 з дисципліни
+"Програмування під Android"
+на тему " Сховища даних (Preferences, база даних SQLite, файли) " 
+
+
+
+Виконала ст. гр. ПЗПІ-23-2
+Колодіюк Надія Сергіївна
+
+Перевірив 
+ст. викладач кафедри ПІ
+Сокорчук Ігор Петрович
+
+
+
+
+
+
+
+Харків 2024
+
+МЕТА
+
+Ознайомитися із різними способами збереження даних у Android, зокрема з використанням SharedPreferences, бази даних SQLite та роботи з файлами. Навчитися застосовувати ці методи у прикладних проєктах.
+
+
+ЗАВДАННЯ
+
+Ознайомитися з роботою SharedPreferences для збереження налаштувань застосунку.
+Опанувати роботу з базою даних SQLite: створення, збереження та отримання даних.
+Вивчити роботу з файлами для збереження даних у внутрішній або зовнішній пам'яті.
+
+ХІД РОБОТИ
+
+1. Робота з SharedPreferences:
+Створіть простий застосунок, який дозволяє зберігати та відображати налаштування користувача (наприклад, ім'я та вік).
+При натисканні на кнопку дані мають записуватися у SharedPreferences, а при перезапуску застосунку — автоматично зчитуватися.
+Код SharedPreferencesHelper у додатку А.
+2. Робота з SQLite:
+Створіть базу даних для збереження інформації про користувачів (ім'я, вік).
+Реалізуйте додавання нових користувачів у базу через форму введення.
+Відобразіть список користувачів на екрані.
+Код DataBaseHelper у додатку Б.
+3. Робота з файлами:
+Створіть функціонал для запису текстових даних у файл.
+Реалізуйте можливість зчитування цього файлу та відображення вмісту на екрані.
+Код FileHelper у додатку В.
+
+Запустити застосунок на емуляторі або фізичному пристрої, перевірити збереження та отримання даних.
+Дослідити, як Android працює з кожним із типів сховищ, виконуючи завдання та аналізуючи результати.
+
+
+ВИСНОВКИ
+
+Для постійного збереження інформації користувача та даних, необхідних для функціонування застосунку існує декілька підходів у застосунках для Android. Для збереження налаштувань можна використовувати SharedPreferences, для збереження більшого об’єму даних використовується база даних SQLite, також є можливість писати у файл.
+Посилання на репозиторій з програмним кодом створеного застосунку: https://github.com/NureKolodiiukNadiia/android-pzpi-23-2-kolodiiuk-nadiia/LabTask1/android-pzpi-23-2-kolodiiuk-nadiia-pract-task1. Посилання на відеозапис: https://youtu.be/nX1KGg5nC0w .
+
+ВИКОРИСТАНІ ДЖЕРЕЛА
+
+    1. Методичні вказівки. URL: https://dl.nure.ua/mod/page/view.php?id=611587. 
+    2. Презентація до лекції.  URL: https://drive.google.com/file/d/1ad5a4JXgSXhh1ODkjFxowM_WWzBsH-iN/view. 
+    3. Документація Android. URL: https://developer.android.com/training/data-storage/shared-preferences. 
+    4. Відеозвіт. URL: https://youtu.be/nX1KGg5nC0w .
+
+
+ДОДАТОК А
+
+SharedPreferencesHelper.java
+
+  1 package nadiia.kolodiiuk.practtask4;
+  2 
+  3 import android.content.Context;
+  4 import android.content.SharedPreferences;
+  5 
+  6 public class SharedPreferencesHelper {
+  7 
+  8     public static <T> void writeToSharedPreferences(
+  9             Context context, String prefsName, String key, T value) {
+10 
+11         SharedPreferences sharedPreferences = context.getSharedPreferences(
+12                 prefsName, Context.MODE_PRIVATE);
+13         SharedPreferences.Editor editor = sharedPreferences.edit();
+14         if (value instanceof String) {
+15             editor.putString(key, value.toString());
+16         } else {
+17             editor.putInt(key, (int) value);
+18         }
+19         editor.apply();
+20     }
+21 
+22     public static String readStringFromSharedPreferences(Context context, String prefsName, String key) {
+23 
+24         SharedPreferences sharedPreferences = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE);
+25         return sharedPreferences.getString(key, "default_value");
+26     }
+27 
+28     public static int readIntFromSharedPreferences(Context context, String prefsName, String key) {
+29         
+30         SharedPreferences sharedPreferences = context.getSharedPreferences(prefsName, Context.MODE_PRIVATE);
+31         return sharedPreferences.getInt(key, 0);
+32     }
+33 }
+
+ДОДАТОК Б
+
+FileHelper.java
+
+  1 package nadiia.kolodiiuk.practtask4;
+  2 
+  3 import android.content.Context;
+  4 
+  5 import java.io.BufferedReader;
+  6 import java.io.FileInputStream;
+  7 import java.io.FileOutputStream;
+  8 import java.io.IOException;
+  9 import java.io.InputStreamReader;
+10 
+11 public class FileHelper {
+12     
+13     public static void writeToFile(Context context, String fileName, String content) {
+14         
+15         try (FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE)) {
+16             fos.write(content.getBytes());
+17         } catch (IOException e) {
+18             e.printStackTrace();
+19         }
+20     }
+21 
+22     public static String readFromFile(Context context, String fileName) {
+23         
+24         StringBuilder content = new StringBuilder();
+25         try (FileInputStream fis = context.openFileInput(fileName);
+26              InputStreamReader isr = new InputStreamReader(fis);
+27              BufferedReader br = new BufferedReader(isr)) {
+28             
+29             String line;
+30             while ((line = br.readLine()) != null) {
+31                 content.append(line);
+32             }
+33         } catch (IOException e) {
+34             e.printStackTrace();
+35         }
+36         return content.toString();
+37     }
+38 }
+
+ДОДАТОК В
+
+DatabaseHelper.java
+
+  1 package nadiia.kolodiiuk.practtask4;
+  2 
+  3 import android.content.Context;
+  4 import android.database.Cursor;
+  5 import android.database.sqlite.SQLiteDatabase;
+  6 import android.database.sqlite.SQLiteOpenHelper;
+  7 
+  8 import java.util.ArrayList;
+  9 import java.util.List;
+10 
+11 public class DatabaseHelper extends SQLiteOpenHelper {
+12 
+13     public DatabaseHelper(Context context) {
+14         super(context, "MyDB", null, 1);
+15     }
+16 
+17     @Override
+18     public void onCreate(SQLiteDatabase db) {
+19         db.execSQL("CREATE TABLE users (" +
+20                 "id INTEGER PRIMARY KEY, " +
+21                 "name TEXT, " +
+22                 "age INTEGER)");
+23     }
+24 
+25     @Override
+26     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+27 
+28     public void insertUser(String name, int age) {
+29         
+30         SQLiteDatabase db = getWritableDatabase();
+31         db.execSQL("INSERT INTO users (name, age) VALUES ('" + name + "', " + age + ")");
+32         db.close();
+33     }
+34     
+35     public List<User> getUsers() {
+36         
+37         List<User> users = new ArrayList<>();
+38 
+39         SQLiteDatabase db = getReadableDatabase();
+40         Cursor cursor = db.query("users", null, null, null, null, null, null);
+41         while (cursor.moveToNext()) {
+42             int nameIndex = cursor.getColumnIndex("name");
+43             int ageIndex = cursor.getColumnIndex("age");
+44 
+45             if (nameIndex != -1 && ageIndex != -1) {
+46                 String name = cursor.getString(nameIndex);
+47                 int age = cursor.getInt(ageIndex);
+48                 users.add(new User(name, age));
+49             }
+50         }
+51         cursor.close();
+52         
+53         return users;
+54     }
+55 }

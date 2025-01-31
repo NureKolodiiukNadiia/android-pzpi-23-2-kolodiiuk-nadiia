@@ -1,0 +1,280 @@
+﻿Харківський університет радіоелектроніки
+Факультет комп'ютерних наук
+Кафедра програмної інженерії
+
+
+
+
+ЗВІТ
+до лабораторного заняття №4 з дисципліни
+"Програмування під Android"
+на тему "Створення мінімального застосунку для ведення нотаток" 
+
+
+
+Виконала ст. гр. ПЗПІ-23-2
+Колодіюк Надія Сергіївна
+
+
+Перевірив 
+ст. викладач кафедри ПІ
+Сокорчук Ігор Петрович
+
+
+
+
+
+
+Харків 2024
+
+МЕТА
+Навчитися створювати застосунки, що підтримують функції створення, видалення та редагування. Навчитися локалізувати застосунки для Android.
+
+ЗАВДАННЯ
+Розробити застосунок для ведення нотаток.
+Застосунок повинен дозволяти переглядати список нотаток, створювати нову нотатку, редагувати нотатку та видаляти нотатку. Кожна нотатка повинна мати назву, опис, важливість (три класи), час і дату призначення і картинку (вибирається з галереї).
+У списку нотатки відображаються з іконкою з галереї і часом створення (праворуч зверху більш дрібним шрифтом), а також графічним відображенням класу важливості (іконка з множини).
+Потрібно реалізувати функції додавання, видалення, редагування (без збереження між перезапуск додатку) нотаток.
+Видалення/редагування викликаються з контекстного меню при довгому натисненні, додавання - з основного меню в ActionBar. У ActionBar реалізувати пошук / фільтрація заміток за змістом тексту, а також фільтрацію за важливістю. Текстові елементи користувацького інтерфейсу повинні бути локалізовані українською та англійською мовами.
+
+ХІД РОБОТИ
+Функції створення, читання, редагування, видалення, фільтрації інкапсульовано у класі репозиторії, що зберігає колекції усіх нотаток та відфільтрованих нотаток у пам’яті. Код репозиторія у додатку А. Для збереження репозиторію як глобального стану на який не впливатимуть події життєвого циклу, репозиторій створюється класом, що успадковується від Application, що є сінглтоном, і зберігається у полі даного класу. Колекція відфільтрованих нотаток адаптується NoteAdapter’ом для RecyclerView. Код NoteAdapter у додатку Б.
+По довгому натисканні на елемент RecyclerView відкривається контекстне меню з вибором дії: редагування або видалення. Для редагування та створення нових нотаток використовується один і той же фрагмент.
+Фільтрування та пошук викликаються з ActionBar. Фільтрування реалізовано за допомогою фрагменту, який створює діалог.
+1    @Override
+2   public Dialog onCreateDialog(Bundle savedInstanceState) {
+3        String[] priorities = { getString(R.string.all_priority), getString(R.string.low_priority), getString(R.string.medium_priority), getString(R.string.high_priority)
+4        };        
+5       return new AlertDialog.Builder(requireActivity())
+6                .setTitle(getString(R.string.select_filter))
+7                .setItems(priorities, (dialog, which) -> {
+8                    Priority selectedPriority;
+9                    if (which == 0) {
+10                        selectedPriority = null;
+11                    } else {
+12                        selectedPriority = Priority.values()[which - 1];
+13                    }
+14                  noteRepository.filterNotesByPriority(selectedPriority);
+15                })
+16                .create();
+17    }
+
+Пошук реалізовано за допомогою SearchView.
+1        MenuItem searchItem = menu.findItem(R.id.action_search);
+2        SearchView searchView = (SearchView) searchItem.getActionView();
+3        searchView.setQueryHint(getString(R.string.search_hint));
+4        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+5           @Override
+6            public boolean onQueryTextSubmit(String query) {
+7                noteRepository.filterNotesByText(query);
+8                return true;
+9            }
+10            @Override
+11            public boolean onQueryTextChange(String newText) {
+12                noteRepository.filterNotesByText(newText);
+13                return true;
+14            }
+15        });
+Текстові елементи локалізовані, для перемикання між мовами користувач натискає кнопку меню, у меню (реалізовано як фрагмент) обирає потрібну мову за допомогою Spinner’а.
+
+ВИСНОВКИ
+Посилання на репозиторій з програмним кодом створеного застосунку: https://github.com/NureKolodiiukNadiia/android-pzpi-23-2-kolodiiuk-nadiia/LabTask4/android-pzpi-23-2-kolodiiuk-nadiia-lab-task4. Посилання на відеозапис: https://youtu.be/UrZ7ThCGzgk .
+
+
+ВИКОРИСТАНІ ДЖЕРЕЛА
+    1. Observer. Refactoring and Design Patterns. URL: https://refactoring.guru/design-patterns/observer.
+    2. Singleton. Refactoring and Design Patterns. URL: https://refactoring.guru/design-patterns/singleton.
+    3. Відеозвіт. URL: https://youtu.be/UrZ7ThCGzgk .
+ДОДАТОК А
+
+NoteRepository
+  1 public class NoteRepository implements Serializable {
+  2     private final List<Note> allNotes = new ArrayList<>();
+  3     private final List<Note> filteredNotes = new ArrayList<>();
+  4     private NoteDataListener noteDataListener;
+  5 
+  6     public NoteRepository() {
+  7     }
+  8 
+  9     public List<Note> getFilteredNotes() {
+10         return new ArrayList<>(filteredNotes);
+11     }
+12 
+13     public void setNoteDataListener(NoteDataListener noteDataListener) {
+14         this.noteDataListener = noteDataListener;
+15     }
+16     public Note createNote(String name, String description,
+17                            Priority priority, String time, String date,
+18                            byte[] image, String createdAt) {
+19 
+20         Note note = new Note(name, description, priority, time, date, image, createdAt);
+21         allNotes.add(note);
+22         filteredNotes.clear();
+23         filteredNotes.addAll(allNotes);
+24         notifyDataChanged();
+25 
+26         return note;
+27     }
+28 
+29     public Note updateNote(Note updatedNote) {
+30 
+31         for (int i = 0; i < allNotes.size(); i++) {
+32             if (allNotes.get(i).getId() == updatedNote.getId()) {
+33                 allNotes.set(i, updatedNote);
+34                 filteredNotes.clear();
+35                 filteredNotes.addAll(allNotes);
+36                 notifyDataChanged();
+37                 return updatedNote;
+38             }
+39         }
+40 
+41         return null;
+42     }
+43 
+44     public void deleteNote(int id) {
+45 
+46         allNotes.removeIf(note -> note.getId() == id);
+47         filteredNotes.clear();
+48         filteredNotes.addAll(allNotes);
+49         notifyDataChanged();
+50     }
+51 
+52     public void filterNotesByPriority(Priority priority) {
+53         filteredNotes.clear();
+54         if (priority == null) {
+55             filteredNotes.addAll(allNotes);
+56         } else {
+57             filteredNotes.addAll(allNotes.stream()
+58                     .filter(note -> note.getPriority() == priority)
+59                     .collect(Collectors.toList()));
+60         }
+61         notifyDataChanged();
+62     }
+63 
+64     public void filterNotesByText(String query) {
+65         if (query == null || query.isEmpty()) {
+66             return;
+67         }
+68         filteredNotes.clear();
+69         for (Note note : allNotes) {
+70             if (note.getName().toLowerCase().contains(query.toLowerCase())
+71                     || note.getDescription().toLowerCase().contains(query.toLowerCase())) {
+72                 filteredNotes.add(note);
+73             }
+74         }
+75         notifyDataChanged();
+76     }
+77 
+78     private void notifyDataChanged() {
+79         if (noteDataListener != null) {
+80             noteDataListener.onDataChanged(filteredNotes);
+81         }
+82     }
+83 }
+
+ДОДАТОК Б
+
+NoteAdapter
+1 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
+  2     private static final int[] PRIORITY_FLAGS = {
+  3             R.drawable.blue_flag,
+  4             R.drawable.yellow_flag,
+  5             R.drawable.red_flag
+  6     };
+  7     private final List<Note> notesData = new ArrayList<>(); 
+  8     private OnNoteActionListener listener;
+  9 
+10     public void setNotesData(List<Note> newNotesData) {
+11         notesData.clear();
+12         if (newNotesData != null) {
+13             notesData.addAll(newNotesData);
+14         }
+15         notifyDataSetChanged();
+16     }
+17 
+18     @NonNull
+19     @Override
+20     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+21 
+22         View v = LayoutInflater.from(parent.getContext())
+23                 .inflate(R.layout.list_item, parent, false);
+24 
+25         return new ViewHolder(v);
+26     }
+27 
+28     @Override
+29     public void onBindViewHolder(ViewHolder holder, int position) {
+30 
+31         Note note = notesData.get(position);
+32         holder.textView.setText(note.getName());
+33         holder.dateView.setText(note.getCreatedAt());
+34         int flagResourceId = PRIORITY_FLAGS[note.getPriority().ordinal()];
+35         holder.priorityFlag.setImageResource(flagResourceId);
+36 
+37         if (note.getImage() != null && note.getImage().length > 0) {
+38             Bitmap bitmap = BitmapFactory.decodeByteArray(note.getImage(), 0, note.getImage().length);
+39             holder.galleryPicture.setVisibility(View.VISIBLE);
+40             holder.galleryPicture.setImageBitmap(bitmap);
+41         } else {
+42             holder.galleryPicture.setVisibility(View.GONE);
+43         }
+44 
+45         holder.itemView.setOnLongClickListener(v -> {
+46 
+47             v.showContextMenu();
+48             return true;
+49         });
+50 
+51         holder.itemView.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
+52 
+53             MenuItem edit = menu.add(Menu.NONE, 1, 1, R.string.edit);
+54             MenuItem delete = menu.add(Menu.NONE, 2, 2, R.string.delete);
+55 
+56             edit.setOnMenuItemClickListener(item -> {
+57 
+58                 listener.onEditNoteClicked(notesData.get(holder.getAdapterPosition()));
+59                 return true;
+60             });
+61 
+62             delete.setOnMenuItemClickListener(item -> {
+63 
+64                 listener.onDeleteNoteClicked(notesData.get(holder.getAdapterPosition()));
+65                 return true;
+66             });
+67         });
+68     }
+69 
+70     @Override
+71     public int getItemCount() {
+72         
+73         return notesData.size();
+74     }
+75     
+76     public static class ViewHolder extends RecyclerView.ViewHolder {
+77 
+78         public TextView textView;
+79         public TextView dateView;
+80         public ImageView priorityFlag;
+81         public ImageView galleryPicture;
+82 
+83         public ViewHolder(View v) {
+84 
+85             super(v);
+86             textView = v.findViewById(R.id.noteNameText);
+87             dateView = v.findViewById(R.id.createdDateText);
+88             priorityFlag = v.findViewById(R.id.imageViewPriority);
+89             galleryPicture = v.findViewById(R.id.galleryPictureImageView);
+90         }
+91     }
+92 
+93     public interface OnNoteActionListener {
+94         
+95         void onEditNoteClicked(Note note);
+96         void onDeleteNoteClicked(Note note);
+97     }
+98     
+99     public void setOnNoteActionListener(OnNoteActionListener listener) {
+100         
+101         this.listener = listener;
+102     }
+103 }

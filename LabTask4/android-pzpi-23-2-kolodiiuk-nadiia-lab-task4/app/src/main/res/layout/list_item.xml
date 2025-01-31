@@ -1,0 +1,46 @@
+<androidx.constraintlayout.widget.ConstraintLayout 
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/galleryPictureImageView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/blue_flag"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/noteNameText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/galleryPictureImageView"
+        app:layout_constraintEnd_toStartOf="@id/createdDateText"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0" />
+
+    <TextView
+        android:id="@+id/createdDateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="20.12.12"
+        android:textSize="11sp"
+        android:textColor="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageViewPriority"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/blue_flag"
+        app:layout_constraintEnd_toEndOf="@id/createdDateText"
+        app:layout_constraintTop_toBottomOf="@id/createdDateText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

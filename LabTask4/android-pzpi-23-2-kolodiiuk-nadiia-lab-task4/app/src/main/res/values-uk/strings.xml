@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Замітки</string>
+    <string name="language">Мова</string>
+    <string name="note_name">Назва нотатки</string>
+    <string name="note_description">Опис</string>
+    <string-array name="priority_array">
+        <item>Низька важливість</item>
+        <item>Середня важливість</item>
+        <item>Висока важливість</item>
+    </string-array>
+    <string name="save">Зберегти</string>
+    <string name="search_hint">Шукати замітки...</string>
+    <string name="edit">Редагувати</string>
+    <string name="delete">Видалити</string>
+    <string name="select_image">Обрати зображення</string>
+    <string name="select_time">Обрати час</string>
+    <string name="select_date">Обрати дату</string>
+    <string name="all_priority">Усі</string>
+    <string name="low_priority">Низька важливість</string>
+    <string name="medium_priority">Середня важливість</string>
+    <string name="high_priority">Висока важливість</string>
+    <string name="select_filter">Обрати фільтр</string>
+</resources>

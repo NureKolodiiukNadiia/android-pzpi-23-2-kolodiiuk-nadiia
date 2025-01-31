@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Notes</string>
+    <string name="language">Language</string>
+    <string name="note_name">Note name</string>
+    <string name="note_description">Description</string>
+    <string-array name="priority_array">
+        <item>LOW</item>
+        <item>MEDIUM</item>
+        <item>HIGH</item>
+    </string-array>
+    <string name="save">Save</string>
+    <string name="search_hint">Search notes...</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="select_image">Select image</string>
+    <string name="select_time">Select time</string>
+    <string name="select_date">Select date</string>
+    <string name="all_priority">All</string>
+    <string name="low_priority">Low</string>
+    <string name="medium_priority">Medium</string>
+    <string name="high_priority">High</string>
+    <string name="select_filter">Select filter</string>
+    <string name="select_theme">Select theme</string>
+</resources>

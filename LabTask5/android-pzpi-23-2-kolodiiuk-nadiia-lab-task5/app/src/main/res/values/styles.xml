@@ -1,0 +1,7 @@
+<resources>
+    <style name="ActionBarStyle" parent="Widget.Material3.ActionBar.Solid">
+        <item name="elevation">4dp</item>
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:textColorPrimary">?attr/colorOnPrimary</item>
+    </style>
+</resources>

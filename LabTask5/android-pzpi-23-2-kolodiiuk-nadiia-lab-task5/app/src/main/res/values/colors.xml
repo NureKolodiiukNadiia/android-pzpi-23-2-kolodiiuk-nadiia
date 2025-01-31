@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base Colors -->
+    <color name="colorPrimary">#000000</color>
+    <color name="colorPrimaryDark">#FFFFFF</color>
+    <color name="colorAccent">#090979</color>
+
+    <!-- Light Theme Colors -->
+    <color name="lightBackground">#FFFFFF</color>
+    <color name="black">#000000</color>
+
+    <!-- Dark Theme Colors -->
+    <color name="darkBackground">#121212</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Blue Theme Colors -->
+    <color name="blue_primary">#2196F3</color>
+    <color name="blue_primary_dark">#1976D2</color>
+    <color name="blue_accent">#FF4081</color>
+
+    <!-- Dark Blue Theme Colors -->
+    <color name="dark_blue_primary">#1565C0</color>
+    <color name="dark_blue_primary_dark">#0D47A1</color>
+    <color name="dark_blue_accent">#FF80AB</color>
+
+    <!-- Brown Theme Colors -->
+    <color name="brown_primary">#795548</color>
+    <color name="brown_primary_dark">#5D4037</color>
+    <color name="brown_accent">#FF5722</color>
+
+    <!-- Dark Brown Theme Colors -->
+    <color name="dark_brown_primary">#4E342E</color>
+    <color name="dark_brown_primary_dark">#3E2723</color>
+    <color name="dark_brown_accent">#BF360C</color>
+</resources>
